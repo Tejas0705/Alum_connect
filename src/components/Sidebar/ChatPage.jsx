@@ -4,7 +4,6 @@ import useGetAllUser from '../../hooks/useGetAllUser';
 import ChatWindow from './ChatWindow';
 
 const ChatPage = ({ currentUser }) => {
-  console.log('currentUser:', currentUser);
   const { users, loading, error } = useGetAllUser();
   const [selectedUser, setSelectedUser] = useState(null);
 

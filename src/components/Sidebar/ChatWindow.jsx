@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Flex, Text, Input, Button, Box } from '@chakra-ui/react';
-import { collection, addDoc, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, limit, onSnapshot, doc, setDoc } from 'firebase/firestore';
 import { firestore } from '../../firebase/firebase';
 
 const ChatWindow = ({ user, currentUser }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
+  const chatId = [currentUser.uid, user.uid].sort().join('_'); // Generate a consistent chat ID
+
   useEffect(() => {
     const fetchMessages = async () => {
-      const messagesCollection = collection(firestore, 'messages');
+      const messagesCollection = collection(firestore, 'chats', chatId, 'messages');
       const messagesQuery = query(messagesCollection, orderBy('timestamp'), limit(20));
       const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
         const newMessages = snapshot.docs.map((doc) => doc.data());
@@ -20,13 +22,13 @@ const ChatWindow = ({ user, currentUser }) => {
     };
 
     fetchMessages();
-  }, []);
+  }, [chatId]);
 
   const handleMessageSubmit = async () => {
     if (message.trim() === '') return;
 
     try {
-      const messagesCollection = collection(firestore, 'messages');
+      const messagesCollection = collection(firestore, 'chats', chatId, 'messages');
       await addDoc(messagesCollection, {
         userId: currentUser.uid,
         text: message,
