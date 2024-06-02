@@ -66,24 +66,40 @@ const AddZoomLink = () => {
   };
 
   return (
-    <Box px={20} ml='5' margin={100} >
-    <Box p={5} shadow="md" borderWidth="1px" bg="black" borderColor={"white"} borderRadius={20}>
-      <Input
-        value={zoomLink}
-        onChange={(e) => setZoomLink(e.target.value)}
-        placeholder="Enter Zoom link"
-        mb={5}
-      />
-      <Textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Enter description"
-        mb={5}
-      />
-      <Button onClick={handleCreateZoomLink} isLoading={isLoading} colorScheme="blue">
-        Create Zoom Link
-      </Button>
-    </Box>
+    <Box 
+      px={{ base: 4, md: 20 }} 
+      ml={{ base: 0, md: 5 }} 
+      m={{ base: 4, md: 100 }}
+    >
+      <Box 
+        p={5} 
+        shadow="md" 
+        borderWidth="1px" 
+        bg="black" 
+        borderColor="white" 
+        borderRadius={20}
+      >
+        <Input
+          value={zoomLink}
+          onChange={(e) => setZoomLink(e.target.value)}
+          placeholder="Enter Zoom link"
+          mb={5}
+        />
+        <Textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Enter description"
+          mb={5}
+        />
+        <Button 
+          onClick={handleCreateZoomLink} 
+          isLoading={isLoading} 
+          colorScheme="blue" 
+          w="full"
+        >
+          Create Zoom Link
+        </Button>
+      </Box>
     </Box>
   );
 };
