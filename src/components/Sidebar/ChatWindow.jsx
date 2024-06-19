@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Flex, Text, Input, Button, Box } from '@chakra-ui/react';
-import { collection, addDoc, query, orderBy, limit, onSnapshot, doc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { firestore } from '../../firebase/firebase';
 
 const ChatWindow = ({ user, currentUser }) => {
@@ -41,27 +41,53 @@ const ChatWindow = ({ user, currentUser }) => {
   };
 
   return (
-    <Flex direction="column" p={4} border="1px solid" borderColor="gray.300" borderRadius="md">
-      <Text fontSize="xl" mb={4}>Chat with {user.username}</Text>
+    <Flex
+      direction="column"
+      p={4}
+      border="1px solid"
+      borderColor="gray.300"
+      borderRadius="md"
+      bgGradient="linear(to-r, black.100, white)"
+      boxShadow="md"
+    >
+      <Text fontSize="xl" mb={4}>
+        Chat with {user.username}
+      </Text>
       <Flex direction="column" mb={4} maxH="300px" overflowY="auto">
         {messages.map((msg, index) => (
           <Box
             key={index}
             alignSelf={msg.userId === currentUser.uid ? 'flex-end' : 'flex-start'}
-            bg={msg.userId === currentUser.uid ? 'green.100' : 'yellow.100'}
+            bg={msg.userId === currentUser.uid ? 'blue.200' : 'gray.200'}
             color="black"
             p={2}
-            borderRadius="md"
+            borderRadius="lg"
             mb={2}
             maxW="70%"
+            boxShadow="sm"
           >
             <Text>{msg.text}</Text>
           </Box>
         ))}
       </Flex>
       <Flex mt={4}>
-        <Input value={message} onChange={(e) => setMessage(e.target.value)} mr={2} />
-        <Button onClick={handleMessageSubmit}>Send</Button>
+        <Input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          mr={2}
+          placeholder="Type your message..."
+          bg="white"
+          borderRadius="full"
+          boxShadow="sm"
+        />
+        <Button
+          onClick={handleMessageSubmit}
+          colorScheme="blue"
+          borderRadius="full"
+          _hover={{ bg: 'blue.500' }}
+        >
+          Send
+        </Button>
       </Flex>
     </Flex>
   );
