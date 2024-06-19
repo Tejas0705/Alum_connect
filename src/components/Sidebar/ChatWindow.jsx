@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Flex, Text, Input, Button, Box } from '@chakra-ui/react';
 import { collection, addDoc, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { firestore } from '../../firebase/firebase';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 const ChatWindow = ({ user, currentUser }) => {
   const [message, setMessage] = useState('');
@@ -112,9 +113,12 @@ const ChatWindow = ({ user, currentUser }) => {
         borderColor="gray.200"
         mb={4}
       >
-        <Text fontSize="lg" fontWeight="bold">
-          {user.username}
-        </Text>
+        {/* Use Link to navigate to profile page */}
+        <Link to={`/${user.username}`} style={{ textDecoration: 'none' }}>
+          <Text fontSize="lg" fontWeight="bold" cursor="pointer" pl={6}>
+            {user.username}
+          </Text>
+        </Link>
       </Flex>
 
       {/* Date Section */}
