@@ -20,7 +20,7 @@ const ChatPage = ({ currentUser }) => {
       {!loading && !error && (
         <Flex overflowX="auto" pb={4} alignItems="center">
           {users.map((user) => (
-            <Flex
+            <Flex 
               key={user.uid}
               direction="column"
               alignItems="center"

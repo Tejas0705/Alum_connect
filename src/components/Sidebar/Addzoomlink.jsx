@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Input, Textarea, useToast } from '@chakra-ui/react';
+import { Box, Button, Input, Textarea, useToast, Center, useBreakpointValue } from '@chakra-ui/react';
 import { addDoc, collection, serverTimestamp, updateDoc, arrayUnion, doc } from 'firebase/firestore';
 import { firestore } from '../../firebase/firebase';
 import useAuthStore from '../../store/authStore';
@@ -65,42 +65,56 @@ const AddZoomLink = () => {
     }
   };
 
+  // Dynamically adjust maxW based on screen size
+  const boxMaxWidth = useBreakpointValue({ base: '100%', sm: '80%', md: '60%', lg: '40%' });
+
   return (
-    <Box 
-      px={{ base: 4, md: 20 }} 
-      ml={{ base: 0, md: 5 }} 
-      m={{ base: 4, md: 100 }}
-    >
+    <Center h="100vh">
       <Box 
         p={5} 
         shadow="md" 
         borderWidth="1px" 
-        bg="black" 
-        borderColor="white" 
+        bg="gray.800" // Dark background color
+        borderColor="purple.500" // Border color
         borderRadius={20}
+        resize="horizontal"
+        maxW={800} // Responsive maximum width
+        w="100%" // Full width
       >
         <Input
           value={zoomLink}
           onChange={(e) => setZoomLink(e.target.value)}
           placeholder="Enter Zoom link"
           mb={5}
+          bg="gray.700" // Darker input background
+          color="white" // Text color
+          _placeholder={{ color: 'gray.400' }} // Placeholder color
+          borderRadius={10}
         />
         <Textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Enter description"
           mb={5}
+          bg="gray.700" // Darker textarea background
+          color="white" // Text color
+          _placeholder={{ color: 'gray.400' }} // Placeholder color
+          borderRadius={10}
+          resize="vertical" // Allow vertical resizing
+          minHeight="200px" // Minimum height
         />
         <Button 
           onClick={handleCreateZoomLink} 
           isLoading={isLoading} 
-          colorScheme="blue" 
+          colorScheme="purple" 
           w="full"
+          borderRadius={10}
+          _hover={{ bg: 'blue.600' }} // Darker hover color
         >
           Create Zoom Link
         </Button>
       </Box>
-    </Box>
+    </Center>
   );
 };
 
