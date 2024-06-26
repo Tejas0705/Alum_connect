@@ -1,36 +1,42 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import useLogout from '../../hooks/useLogout';
 import AddzoomLink from './Addzoomlink';
 import CreatePost from './CreatePost';
 import Home from './Home';
-//import Notifications from './Notifications';
 import ProfileLink from './ProfileLink';
 import Search from './Search';
 import Newaddzoom from './Newaddzoom';
 import Newzoomlink from './Newzoomlink';
 import ChatBox from './ChatBox';
-import { Button, VStack ,Flex} from '@chakra-ui/react';
+import { VStack, HStack } from '@chakra-ui/react';
 
-const SidebarItems = ({ authUser , isMobile = false}) => {
+const SidebarItems = ({ authUser, isMobile }) => {
   const navigate = useNavigate();
-  const { handleLogout } = useLogout();
 
   const handleNavigateToChat = () => {
     navigate('/chatpage', { state: { authUser } });
   };
 
-  return (
-    <Flex direction={isMobile ? "row" : "column"} gap={isMobile ? 4 : 5} align="center">
+  const items = (
+    <>
       <Home />
       <Search />
-      <Newaddzoom />
+      
       <Newzoomlink />
       <ChatBox onClick={handleNavigateToChat} />
       <CreatePost />
       <ProfileLink />
-      
-    </Flex>
+    </>
+  );
+
+  return isMobile ? (
+    <HStack spacing={4} justifyContent="space-around" w="full">
+      {items}
+    </HStack>
+  ) : (
+    <VStack spacing={4} align="stretch">
+      {items}
+    </VStack>
   );
 };
 

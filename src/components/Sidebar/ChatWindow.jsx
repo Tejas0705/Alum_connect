@@ -60,42 +60,68 @@ const ChatWindow = ({ user, currentUser }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const renderDateSection = () => {
-    if (messages.length === 0) return null;
+  const renderDateSections = () => {
+    const dateSections = [];
 
-    const firstMessageDate = new Date(messages[0].timestamp?.toDate());
-    const currentDate = new Date().toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-    const messageDate = firstMessageDate.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    if (messages.length > 0) {
+      let currentDate = new Date(messages[0].timestamp?.toDate()).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      let currentMessages = [];
 
-    if (currentDate === messageDate) {
-      return (
-        <Flex align="center" justify="center" my={2} color="gray.500">
-          <Box borderColor="gray.200" />
-          <Text fontSize="sm" px={2} bg="black" color="white">
-            Today
-          </Text>
-        </Flex>
-      );
-    } else {
-      return (
-        <Flex align="center" justify="center" my={2} color="gray.500">
-          <Box borderColor="gray.200" />
-          <Text fontSize="sm" px={2} bg="black" color="white">
-            {messageDate}
-          </Text>
-        </Flex>
-      );
+      messages.forEach((msg) => {
+        const msgDate = new Date(msg.timestamp?.toDate()).toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+
+        if (msgDate !== currentDate) {
+          dateSections.push({ date: currentDate, messages: currentMessages });
+          currentDate = msgDate;
+          currentMessages = [];
+        }
+
+        currentMessages.push(msg);
+      });
+
+      // Push the last batch of messages
+      dateSections.push({ date: currentDate, messages: currentMessages });
     }
+
+    return dateSections.map((section, index) => (
+      <React.Fragment key={index}>
+        <Flex align="center" justify="center" my={2} color="gray.500">
+          <Box borderColor="gray.200" />
+          <Text fontSize="sm" px={2} bg="black" color="white">
+            {section.date === currentDate ? 'Today' : section.date}
+          </Text>
+        </Flex>
+        {section.messages.map((msg, index) => (
+          <Box
+            key={index}
+            alignSelf={msg.userId === currentUser.uid ? 'flex-end' : 'flex-start'}
+            bg={msg.userId === currentUser.uid ? 'blue.200' : 'gray.200'}
+            color="black"
+            p={3}
+            borderRadius="md"
+            mb={2}
+            maxW="70%"
+            boxShadow="sm"
+            style={{ position: 'sticky', bottom: '0' }} // Stick messages to bottom
+          >
+            <Text>{msg.text}</Text>
+            <Text fontSize="xs" color="gray.500">
+              {new Date(msg.timestamp?.toDate()).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+            </Text>
+          </Box>
+        ))}
+      </React.Fragment>
+    ));
   };
 
   return (
@@ -121,29 +147,10 @@ const ChatWindow = ({ user, currentUser }) => {
         </Link>
       </Flex>
 
-      {/* Date Section */}
-      {renderDateSection()}
-
-      {/* Messages Section */}
+      {/* Render date sections */}
       <Flex direction="column" flex="1" overflowY="auto" mb={4} maxHeight="calc(100% - 120px)">
-        {messages.map((msg, index) => (
-          <Box
-            key={index}
-            alignSelf={msg.userId === currentUser.uid ? 'flex-end' : 'flex-start'}
-            bg={msg.userId === currentUser.uid ? 'blue.200' : 'gray.200'}
-            color="black"
-            p={3}
-            borderRadius="md"
-            mb={2}
-            maxW="70%"
-            boxShadow="sm"
-          >
-            <Text>{msg.text}</Text>
-            <Text fontSize="xs" color="gray.500">
-              {new Date(msg.timestamp?.toDate()).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
-            </Text>
-          </Box>
-        ))}
+        {renderDateSections()}
+        {/* Hidden element for scrolling to bottom */}
         <div ref={messagesEndRef} />
       </Flex>
 

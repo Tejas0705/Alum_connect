@@ -1,39 +1,43 @@
-import { Box, Container, Flex, Skeleton, SkeletonCircle, Text, VStack } from "@chakra-ui/react";
+import { Box, Container, Text, VStack } from "@chakra-ui/react";
 import FeedPost from "./FeedPost";
 import useGetFeedPosts from "../../hooks/useGetFeedPosts";
 
 const FeedPosts = () => {
-	const { isLoading, posts } = useGetFeedPosts();
+  const { isLoading, posts } = useGetFeedPosts();
 
-	return (
-		<Container maxW={"container.sm"} py={10} px={2}>
-			{isLoading &&
-				[0, 1, 2].map((_, idx) => (
-					<VStack key={idx} gap={4} alignItems={"flex-start"} mb={10}>
-						<Flex gap='2'>
-							<SkeletonCircle size='10' />
-							<VStack gap={2} alignItems={"flex-start"}>
-								<Skeleton height='10px' w={"200px"} />
-								<Skeleton height='10px' w={"200px"} />
-							</VStack>
-						</Flex>
-						<Skeleton w={"full"}>
-							<Box h={"400px"}>contents wrapped</Box>
-						</Skeleton>
-					</VStack>
-				))}
+  return (
+    <Container maxW={"container.sm"} py={5} px={1}>
+      {isLoading &&
+        [0, 1, 2].map((_, idx) => (
+          <VStack key={idx} gap={4} alignItems={"flex-start"} mb={10}>
+            <Box>
+              <Box display="flex" alignItems="center" gap="2">
+                {/* Skeleton Circle */}
+                <Box bg="gray.200" w="20px" h="20px" borderRadius="full" />
 
-			{!isLoading && posts.length > 0 && posts.map((post) => <FeedPost key={post.id} post={post} />)}
-			{!isLoading && posts.length === 0 && (
-				<>
-					<Text fontSize={"md"} color={"red.400"}>
-						Your Feed is blank since you don't Follow Anyone 
-					</Text>
-					<Text color={"red.400"}>Follow Your Colleagues to view their posts </Text>
-				</>
-			)}
-		</Container>
-	);
+                <VStack alignItems="flex-start" spacing="2">
+                  {/* Skeleton lines */}
+                  <Box bg="gray.200" w="200px" h="10px" />
+                  <Box bg="gray.200" w="200px" h="10px" />
+                </VStack>
+              </Box>
+            </Box>
+            {/* Skeleton Box */}
+            <Box bg="gray.200" w="100%" h="400px" />
+          </VStack>
+        ))}
+
+      {!isLoading && posts.length > 0 && posts.map((post) => <FeedPost key={post.id} post={post} />)}
+      {!isLoading && posts.length === 0 && (
+        <VStack spacing={4} alignItems="center">
+          <Text fontSize="md" color="red.400">
+            Your Feed is blank since you don't follow anyone.
+          </Text>
+          <Text color="red.400">Follow your colleagues to view their posts.</Text>
+        </VStack>
+      )}
+    </Container>
+  );
 };
 
 export default FeedPosts;

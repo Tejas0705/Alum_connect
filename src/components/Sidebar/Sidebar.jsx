@@ -9,6 +9,7 @@ const Sidebar = () => {
 
   return (
     <>
+      {/* Desktop Sidebar */}
       <Box
         display={{ base: "none", md: "block" }}
         height="100vh"
@@ -21,7 +22,8 @@ const Sidebar = () => {
         px={{ base: 2, md: 4 }}
       >
         <Flex direction="column" gap={10} w="full" height="full">
-          <Link to="/" as={RouterLink} pl={2} cursor="pointer">
+          {/* Logo only in desktop view */}
+          <Link to="/" as={RouterLink} pl={2} display={{ base: "none", md: "block" }} cursor="pointer">
             <img src="/logo-white.png" alt="logo" />
           </Link>
           <Flex direction="column" gap={5} cursor="pointer">
@@ -33,7 +35,7 @@ const Sidebar = () => {
             placement="right"
             ml={1}
             openDelay={500}
-            display={{ base: "block", md: "none" }}
+            display={{ base: "none", md: "block" }}
           >
             <Flex
               onClick={handleLogout}
@@ -42,9 +44,9 @@ const Sidebar = () => {
               _hover={{ bg: "whiteAlpha.400" }}
               borderRadius={6}
               p={2}
-              w={{ base: 10, md: "full" }}
+              w="full"
               mt="auto"
-              justifyContent={{ base: "center", md: "flex-start" }}
+              justifyContent="flex-start"
             >
               <BiLogOut size={25} />
               <Button
@@ -60,6 +62,7 @@ const Sidebar = () => {
         </Flex>
       </Box>
 
+      {/* Mobile Sidebar */}
       <Box
         display={{ base: "flex", md: "none" }}
         position="fixed"
