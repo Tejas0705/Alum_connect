@@ -14,7 +14,7 @@ const ChatPage = ({ currentUser }) => {
 
   return (
     <Flex direction="column" p={4}>
-      <Text fontSize="xl" mb={4}>Chat with People</Text>
+     {/*} <Text fontSize="xl" mb={4}>Chat with People</Text>*/}
       {loading && <Spinner />}
       {error && <Text>Error: {error}</Text>}
       {!loading && !error && (

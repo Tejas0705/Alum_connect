@@ -10,9 +10,9 @@ import Search from './Search';
 import Newaddzoom from './Newaddzoom';
 import Newzoomlink from './Newzoomlink';
 import ChatBox from './ChatBox';
-import { Button, VStack } from '@chakra-ui/react';
+import { Button, VStack ,Flex} from '@chakra-ui/react';
 
-const SidebarItems = ({ authUser }) => {
+const SidebarItems = ({ authUser , isMobile = false}) => {
   const navigate = useNavigate();
   const { handleLogout } = useLogout();
 
@@ -21,7 +21,7 @@ const SidebarItems = ({ authUser }) => {
   };
 
   return (
-    <VStack spacing={4} align="stretch">
+    <Flex direction={isMobile ? "row" : "column"} gap={isMobile ? 4 : 5} align="center">
       <Home />
       <Search />
       <Newaddzoom />
@@ -30,7 +30,7 @@ const SidebarItems = ({ authUser }) => {
       <CreatePost />
       <ProfileLink />
       
-    </VStack>
+    </Flex>
   );
 };
 
