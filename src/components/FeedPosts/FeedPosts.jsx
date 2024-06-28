@@ -33,7 +33,7 @@ const FeedPosts = () => {
           <Text fontSize="md" color="red.400">
             Your Feed is blank since you don't follow anyone.
           </Text>
-          <Text color="red.400">Follow your colleagues to view their posts.</Text>
+          <Text color="red.400">Follow your colleagues to view their posts. OR <br /> Your colleages havent posted yet!!</Text>
         </VStack>
       )}
     </Container>

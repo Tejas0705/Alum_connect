@@ -1,6 +1,27 @@
 import React, { useState } from 'react';
-import { Box, Button, Input, Textarea, useToast, Center, useBreakpointValue, Container, Flex, Text, VStack, Avatar, Spinner } from '@chakra-ui/react';
-import { addDoc, collection, serverTimestamp, updateDoc, arrayUnion, doc } from 'firebase/firestore';
+import {
+  Box,
+  Button,
+  Input,
+  Textarea,
+  useToast,
+  Center,
+  useBreakpointValue,
+  Container,
+  Flex,
+  Text,
+  VStack,
+  Avatar,
+  Spinner,
+} from '@chakra-ui/react';
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  updateDoc,
+  arrayUnion,
+  doc,
+} from 'firebase/firestore';
 import { firestore } from '../../firebase/firebase';
 import useAuthStore from '../../store/authStore';
 import useGetZoomLinksByUser from '../../hooks/useGetZoomLinksByUser';
@@ -33,6 +54,8 @@ const ZoomLinkPage = () => {
         description,
         createdAt: serverTimestamp(),
         createdBy: authUser.uid,
+       // username: authUser.displayName,
+        //creatorProfilePic: authUser.photoURL,
       };
 
       const zoomLinksCollectionRef = collection(firestore, 'zoomLinks');
@@ -71,53 +94,7 @@ const ZoomLinkPage = () => {
   const boxMaxWidth = useBreakpointValue({ base: '100%', sm: '80%', md: '60%', lg: '40%' });
 
   return (
-    <Container maxW="container.md" py={10}>
-      <Center>
-        <Box
-          p={5}
-          shadow="md"
-          borderWidth="1px"
-          bg="gray.800"
-          borderColor="purple.500"
-          borderRadius={20}
-          resize="horizontal"
-          maxW={800}
-          w="100%"
-        >
-          <Input
-            value={zoomLink}
-            onChange={(e) => setZoomLink(e.target.value)}
-            placeholder="Enter Zoom link"
-            mb={5}
-            bg="gray.700"
-            color="white"
-            _placeholder={{ color: 'gray.400' }}
-            borderRadius={10}
-          />
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter description"
-            mb={5}
-            bg="gray.700"
-            color="white"
-            _placeholder={{ color: 'gray.400' }}
-            borderRadius={10}
-            resize="vertical"
-            minHeight="200px"
-          />
-          <Button
-            onClick={handleCreateZoomLink}
-            isLoading={isLoading}
-            colorScheme="purple"
-            w="full"
-            borderRadius={10}
-            _hover={{ bg: 'blue.600' }}
-          >
-            Create Zoom Link
-          </Button>
-        </Box>
-      </Center>
+    <Container maxW="container.md" py={10} position="relative">
       {loading ? (
         <Flex justifyContent="center" alignItems="center" height="100vh">
           <Spinner size="xl" thickness="4px" speed="0.70s" emptyColor="gray.200" color="blue.500" />
@@ -125,27 +102,79 @@ const ZoomLinkPage = () => {
       ) : error ? (
         <Text>Error: {error}</Text>
       ) : (
-        <VStack spacing={5} align="stretch" mt={10}>
-          {zoomLinks.length > 0 ? (
-            zoomLinks.map((link) => (
-              <Box key={link.id} p={5} shadow="md" borderWidth="1px">
-                <Flex align="center" mb={4}>
-                  <Avatar src={link.creatorProfilePic} size="sm" />
-                  <Text ml={3} fontWeight="bold">
-                    {link.creatorUsername}
+        <VStack spacing={5} align="stretch" mt={10} overflowY="auto" maxHeight="75vh">
+          {/* Section for displaying existing Zoom links */}
+          <VStack spacing={5} align="stretch" w="100%" overflowY="auto" maxHeight="50vh">
+            {zoomLinks.length > 0 ? (
+              zoomLinks.map((link) => (
+                <Box key={link.id} p={5} shadow="md" borderWidth="1px" w="100%">
+                  <Flex align="center" mb={4}>
+                    <Avatar src={link.creatorProfilePic} size="sm" />
+                    <Text ml={3} fontWeight="bold" color={"white"}>
+                      {authUser.username}
+                    </Text>
+                  </Flex>
+                  <Text fontSize="xl">{link.description}</Text>
+                  <Text mt={4} color="blue">
+                    <a href={link.zoomLink} target="_blank" rel="noopener noreferrer">
+                      {link.zoomLink}
+                    </a>
                   </Text>
-                </Flex>
-                <Text fontSize="xl">{link.description}</Text>
-                <Text mt={4} color="blue">
-                  <a href={link.zoomLink} target="_blank" rel="noopener noreferrer">
-                    {link.zoomLink}
-                  </a>
-                </Text>
-              </Box>
-            ))
-          ) : (
-            <Text>No Zoom links found.</Text>
-          )}
+                </Box>
+              )).reverse() // Reverse array to show newly added links at the top
+            ) : (
+              <Text>No Zoom links found.</Text>
+            )}
+          </VStack>
+
+          {/* Section for adding new Zoom links */}
+          <Box
+            p={5}
+            shadow="md"
+            borderWidth="1px"
+            bg="gray.800"
+            borderColor="purple.500"
+            borderRadius={20}
+            resize="horizontal"
+            maxW={5000}
+            w="100%"
+            position="sticky"
+            bottom={0} // Adjusted to stick it to the bottom of the container
+            zIndex={10}
+          >
+            <Input
+              value={zoomLink}
+              onChange={(e) => setZoomLink(e.target.value)}
+              placeholder="Enter Zoom link"
+              mb={3}
+              bg="gray.700"
+              color="white"
+              _placeholder={{ color: 'gray.400' }}
+              borderRadius={10}
+            />
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter description"
+              mb={3}
+              bg="gray.700"
+              color="white"
+              _placeholder={{ color: 'gray.400' }}
+              borderRadius={10}
+              resize="vertical"
+              minHeight="80px"
+            />
+            <Button
+              onClick={handleCreateZoomLink}
+              isLoading={isLoading}
+              colorScheme="purple"
+              w="full"
+              borderRadius={10}
+              _hover={{ bg: 'blue.600' }}
+            >
+              Create Zoom Link
+            </Button>
+          </Box>
         </VStack>
       )}
     </Container>

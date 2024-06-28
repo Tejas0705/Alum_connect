@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Flex, Text, Input, Button, Box } from '@chakra-ui/react';
 import { collection, addDoc, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { firestore } from '../../firebase/firebase';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link } from 'react-router-dom';
 
 const ChatWindow = ({ user, currentUser }) => {
   const [message, setMessage] = useState('');
@@ -10,7 +10,7 @@ const ChatWindow = ({ user, currentUser }) => {
   const [currentDate, setCurrentDate] = useState('');
   const messagesEndRef = useRef(null);
 
-  const chatId = [currentUser.uid, user.uid].sort().join('_'); // Generate a consistent chat ID
+  const chatId = [currentUser.uid, user.uid].sort().join('_');
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -26,7 +26,6 @@ const ChatWindow = ({ user, currentUser }) => {
 
     fetchMessages();
 
-    // Fetch current date for display at the top
     const currentDate = new Date().toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
@@ -89,7 +88,6 @@ const ChatWindow = ({ user, currentUser }) => {
         currentMessages.push(msg);
       });
 
-      // Push the last batch of messages
       dateSections.push({ date: currentDate, messages: currentMessages });
     }
 
@@ -112,7 +110,7 @@ const ChatWindow = ({ user, currentUser }) => {
             mb={2}
             maxW="70%"
             boxShadow="sm"
-            style={{ position: 'sticky', bottom: '0' }} // Stick messages to bottom
+            style={{ position: 'sticky', bottom: '0' }}
           >
             <Text>{msg.text}</Text>
             <Text fontSize="xs" color="gray.500">
@@ -125,8 +123,7 @@ const ChatWindow = ({ user, currentUser }) => {
   };
 
   return (
-    <Flex direction="column" p={4} border="1px solid" borderColor="gray.300" borderRadius="md" h="500px">
-      {/* Sticky Username Section */}
+    <Flex direction="column" p={4} border="1px solid" borderColor="gray.300" borderRadius="md" h={{ base: '430px', md: '500px' }}>
       <Flex
         position="sticky"
         top="0"
@@ -139,7 +136,6 @@ const ChatWindow = ({ user, currentUser }) => {
         borderColor="gray.200"
         mb={4}
       >
-        {/* Use Link to navigate to profile page */}
         <Link to={`/${user.username}`} style={{ textDecoration: 'none' }}>
           <Text fontSize="lg" fontWeight="bold" cursor="pointer" pl={6}>
             {user.username}
@@ -147,14 +143,11 @@ const ChatWindow = ({ user, currentUser }) => {
         </Link>
       </Flex>
 
-      {/* Render date sections */}
       <Flex direction="column" flex="1" overflowY="auto" mb={4} maxHeight="calc(100% - 120px)">
         {renderDateSections()}
-        {/* Hidden element for scrolling to bottom */}
         <div ref={messagesEndRef} />
       </Flex>
 
-      {/* Message Input Section */}
       <Flex>
         <Input
           value={message}
@@ -165,12 +158,7 @@ const ChatWindow = ({ user, currentUser }) => {
           borderRadius="full"
           boxShadow="sm"
         />
-        <Button
-          onClick={handleMessageSubmit}
-          colorScheme="blue"
-          borderRadius="full"
-          _hover={{ bg: 'blue.500' }}
-        >
+        <Button onClick={handleMessageSubmit} colorScheme="blue" borderRadius="full" _hover={{ bg: 'blue.500' }}>
           Send
         </Button>
       </Flex>

@@ -63,62 +63,58 @@ const ProfilePost = ({ post }) => {
 	};
 
 	return (
-		<>
-			<GridItem
-				cursor={"pointer"}
-				borderRadius={4}
-				overflow={"hidden"}
-				border={"1px solid"}
-				borderColor={"whiteAlpha.300"}
-				position={"relative"}
-				aspectRatio={1 / 1}
-				onClick={onOpen}
+		<GridItem
+			key={post.id} // Ensure each GridItem has a unique key prop
+			cursor={"pointer"}
+			borderRadius={4}
+			overflow={"hidden"}
+			border={"1px solid"}
+			borderColor={"whiteAlpha.300"}
+			position={"relative"}
+			aspectRatio={1 / 1}
+			onClick={onOpen}
+			minW={354} // Minimum width for fitting three posts horizontally
+			maxW={354} // Maximum width for fitting three posts horizontally
+			mb={4} // Margin bottom for spacing between posts
+			flex={{ base: "1 0 100%", sm: "1 0 50%", md: "1 0 33.33%" }} // Responsive flex basis for grid layout
+		>
+			<Flex
+				opacity={0}
+				_hover={{ opacity: 1 }}
+				position={"absolute"}
+				top={0}
+				left={0}
+				right={0}
+				bottom={0}
+				bg={"blackAlpha.700"}
+				transition={"all 0.3s ease"}
+				zIndex={1}
+				justifyContent={"center"}
 			>
-				<Flex
-					opacity={0}
-					_hover={{ opacity: 1 }}
-					position={"absolute"}
-					top={0}
-					left={0}
-					right={0}
-					bottom={0}
-					bg={"blackAlpha.700"}
-					transition={"all 0.3s ease"}
-					zIndex={1}
-					justifyContent={"center"}
-				>
-					<Flex alignItems={"center"} justifyContent={"center"} gap={50}>
-						<Flex>
-							<AiFillHeart size={20} />
-							<Text fontWeight={"bold"} ml={2}>
-								{post.likes.length}
-							</Text>
-						</Flex>
+				<Flex alignItems={"center"} justifyContent={"center"} gap={50}>
+					<Flex>
+						<AiFillHeart size={20} />
+						<Text fontWeight={"bold"} ml={2}>
+							{post.likes.length}
+						</Text>
+					</Flex>
 
-						<Flex>
-							<FaComment size={20} />
-							<Text fontWeight={"bold"} ml={2}>
-								{post.comments.length}
-							</Text>
-						</Flex>
+					<Flex>
+						<FaComment size={20} />
+						<Text fontWeight={"bold"} ml={2}>
+							{post.comments.length}
+						</Text>
 					</Flex>
 				</Flex>
+			</Flex>
 
-				<Image src={post.imageURL} alt='profile post' w={"100%"} h={"100%"} objectFit={"cover"} />
-			</GridItem>
-
+			<Image src={post.imageURL} alt='profile post' w={"100%"} h={"100%"} objectFit={"cover"} />
 			<Modal isOpen={isOpen} onClose={onClose} isCentered={true} size={{ base: "3xl", md: "5xl" }}>
 				<ModalOverlay />
 				<ModalContent>
 					<ModalCloseButton />
 					<ModalBody bg={"black"} pb={5}>
-						<Flex
-							gap='4'
-							w={{ base: "90%", sm: "70%", md: "full" }}
-							mx={"auto"}
-							maxH={"90vh"}
-							minH={"50vh"}
-						>
+						<Flex gap='4' w={{ base: "90%", sm: "70%", md: "full" }} mx={"auto"} maxH={"90vh"} minH={"50vh"}>
 							<Flex
 								borderRadius={4}
 								overflow={"hidden"}
@@ -130,7 +126,12 @@ const ProfilePost = ({ post }) => {
 							>
 								<Image src={post.imageURL} alt='profile post' />
 							</Flex>
-							<Flex flex={1} flexDir={"column"} px={10} display={{ base: "none", md: "flex" }}>
+							<Flex
+								flex={1}
+								flexDir={"column"}
+								px={10}
+								display={{ base: "none", md: "flex" }}
+							>
 								<Flex alignItems={"center"} justifyContent={"space-between"}>
 									<Flex alignItems={"center"} gap={4}>
 										<Avatar src={userProfile.profilePicURL} size={"sm"} name='As a Programmer' />
@@ -171,7 +172,7 @@ const ProfilePost = ({ post }) => {
 					</ModalBody>
 				</ModalContent>
 			</Modal>
-		</>
+		</GridItem>
 	);
 };
 
