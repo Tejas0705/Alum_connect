@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flex, Text, Spinner, Avatar } from '@chakra-ui/react';
+import { Flex, Text, Spinner, Avatar,Box,Heading} from '@chakra-ui/react';
 import useGetAllUser from '../../hooks/useGetAllUser';
 import ChatWindow from './ChatWindow';
 
@@ -14,6 +14,24 @@ const ChatPage = ({ currentUser }) => {
 
   return (
     <Flex direction="column" p={4}>
+       <Box
+        display={{ base: "block", md: "none" }}
+        position="sticky"
+        top="0"
+        bg="black"
+        zIndex="sticky"
+        textAlign="left"
+        mt={0}
+        mb={2}
+        px={4} // Adjust padding as needed
+        py={2} // Adjust padding as needed
+        borderBottomWidth="1px"
+        borderColor="gray.200"
+      >
+        <Heading as="h1" size="md">
+          Alum Connect <br />
+        </Heading>
+      </Box>
      {/*} <Text fontSize="xl" mb={4}>Chat with People</Text>*/}
       {loading && <Spinner />}
       {error && <Text>Error: {error}</Text>}

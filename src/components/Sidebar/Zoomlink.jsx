@@ -13,6 +13,7 @@ import {
   VStack,
   Avatar,
   Spinner,
+  Heading,
 } from '@chakra-ui/react';
 import {
   addDoc,
@@ -25,6 +26,7 @@ import {
 import { firestore } from '../../firebase/firebase';
 import useAuthStore from '../../store/authStore';
 import useGetZoomLinksByUser from '../../hooks/useGetZoomLinksByUser';
+import { format } from 'date-fns';
 
 const ZoomLinkPage = () => {
   const [zoomLink, setZoomLink] = useState('');
@@ -39,7 +41,7 @@ const ZoomLinkPage = () => {
     if (!zoomLink || !description) {
       toast({
         title: 'Error',
-        description: 'Zoom link and description are required',
+        description: 'Link URL and description are required',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -54,8 +56,8 @@ const ZoomLinkPage = () => {
         description,
         createdAt: serverTimestamp(),
         createdBy: authUser.uid,
-       // username: authUser.displayName,
-        //creatorProfilePic: authUser.photoURL,
+        username: authUser.username || 'Anonymous',
+        creatorProfilePic: authUser.photoURL || '',
       };
 
       const zoomLinksCollectionRef = collection(firestore, 'zoomLinks');
@@ -69,7 +71,7 @@ const ZoomLinkPage = () => {
 
       toast({
         title: 'Success',
-        description: 'Zoom link created successfully',
+        description: 'Link added successfully',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -78,10 +80,10 @@ const ZoomLinkPage = () => {
       setZoomLink('');
       setDescription('');
     } catch (error) {
-      console.error('Error creating Zoom link:', error);
+      console.error('Error adding link:', error);
       toast({
         title: 'Error',
-        description: 'Failed to create Zoom link',
+        description: 'Failed to add link',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -102,7 +104,25 @@ const ZoomLinkPage = () => {
       ) : error ? (
         <Text>Error: {error}</Text>
       ) : (
-        <VStack spacing={5} align="stretch" mt={10} overflowY="auto" maxHeight="75vh">
+        <VStack spacing={5} align="stretch" mt={0} overflowY="auto" maxHeight="75vh">
+          <Box
+            display={{ base: "block", md: "none" }}
+            position="sticky"
+            top="0"
+            bg="black"
+            zIndex="sticky"
+            textAlign="left"
+            mt={0}
+            px={4}
+            py={2}
+            borderBottomWidth="1px"
+            borderColor="gray.200"
+          >
+            <Heading as="h1" size="md">
+              Alum Connect <br />
+            </Heading>
+          </Box>
+
           {/* Section for displaying existing Zoom links */}
           <VStack spacing={5} align="stretch" w="100%" overflowY="auto" maxHeight="50vh">
             {zoomLinks.length > 0 ? (
@@ -111,7 +131,7 @@ const ZoomLinkPage = () => {
                   <Flex align="center" mb={4}>
                     <Avatar src={link.creatorProfilePic} size="sm" />
                     <Text ml={3} fontWeight="bold" color={"white"}>
-                      {authUser.username}
+                      {link.username || 'Anonymous'}
                     </Text>
                   </Flex>
                   <Text fontSize="xl">{link.description}</Text>
@@ -120,10 +140,15 @@ const ZoomLinkPage = () => {
                       {link.zoomLink}
                     </a>
                   </Text>
+                  {link.createdAt && (
+                    <Text mt={2} fontSize="sm" color="gray.500" textAlign="right">
+                      {format(link.createdAt.toDate(), 'PPpp')}
+                    </Text>
+                  )}
                 </Box>
               )).reverse() // Reverse array to show newly added links at the top
             ) : (
-              <Text>No Zoom links found.</Text>
+              <Text>No Links Found!!</Text>
             )}
           </VStack>
 
@@ -145,7 +170,7 @@ const ZoomLinkPage = () => {
             <Input
               value={zoomLink}
               onChange={(e) => setZoomLink(e.target.value)}
-              placeholder="Enter Zoom link"
+              placeholder="Enter link"
               mb={3}
               bg="gray.700"
               color="white"
@@ -172,7 +197,7 @@ const ZoomLinkPage = () => {
               borderRadius={10}
               _hover={{ bg: 'blue.600' }}
             >
-              Create Zoom Link
+              Create Link
             </Button>
           </Box>
         </VStack>

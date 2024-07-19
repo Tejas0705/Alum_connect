@@ -10,7 +10,7 @@ import PageLayout from './Layouts/PageLayout/PageLayout';
 import SidebarItems from './components/Sidebar/SidebarItems';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './firebase/firebase';
-
+import UsnEntryForm from './components/AuthForm/UsnEntryForm';
 function App() {
   const [authUser] = useAuthState(auth);
 
@@ -23,8 +23,9 @@ function App() {
           <Route path="/auth" element={!authUser ? <AuthPage /> : <Navigate to="/" />} />
           <Route path="/:username" element={<ProfilePage />} />
           <Route path="/addzoomlink" element={<Addzoomlink />} />
-          <Route path="/zoomlink" element={<Zoomlink />} />
+          <Route path="/link" element={<Zoomlink />} />
           <Route path="/chatpage" element={authUser ? <ChatPage currentUser={authUser} authUser={authUser} /> : <Navigate to="/auth" />} />
+          <Route path="/usn-entry" element={<UsnEntryForm />} />
         </Routes>
       
     </PageLayout>

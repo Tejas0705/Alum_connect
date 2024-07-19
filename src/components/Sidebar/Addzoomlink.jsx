@@ -95,6 +95,23 @@ const ZoomLinkPage = () => {
 
   return (
     <Container maxW="container.md" py={10}>
+       <Box
+        display={{ base: "block", md: "none" }}
+        position="sticky"
+        top="0"
+        bg="black"
+        zIndex="sticky"
+        textAlign="left"
+        mt={0}
+        px={4} // Adjust padding as needed
+        py={2} // Adjust padding as needed
+        borderBottomWidth="1px"
+        borderColor="gray.200"
+      >
+        <Heading as="h1" size="md">
+          Alum Connect <br />
+        </Heading>
+      </Box>
       {loading ? (
         <Flex justifyContent="center" alignItems="center" height="100vh">
           <Spinner size="xl" thickness="4px" speed="0.70s" emptyColor="gray.200" color="blue.500" />

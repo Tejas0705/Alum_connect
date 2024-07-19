@@ -6,7 +6,7 @@ const Home = () => {
 	return (
 		<Tooltip
 			hasArrow
-			label={"ZoomLinks"}
+			label={"Links"}
 			placement='right'
 			ml={1}
 			openDelay={500}
@@ -14,7 +14,7 @@ const Home = () => {
 		>
 			<Link
 				display={"flex"}
-				to={"/zoomlink"}
+				to={"/link"}
 				as={RouterLink}
 				alignItems={"center"}
 				gap={4}
@@ -25,7 +25,7 @@ const Home = () => {
 				justifyContent={{ base: "center", md: "flex-start" }}
 			>
 				<TbBrandZoom size={25} />
-				<Box display={{ base: "none", md: "block" }}>ZoomLinks</Box>
+				<Box display={{ base: "none", md: "block" }}>Links</Box>
 			</Link>
 		</Tooltip>
 	);

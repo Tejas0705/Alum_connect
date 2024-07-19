@@ -123,7 +123,7 @@ const ChatWindow = ({ user, currentUser }) => {
   };
 
   return (
-    <Flex direction="column" p={4} border="1px solid" borderColor="gray.300" borderRadius="md" h={{ base: '430px', md: '500px' }}>
+    <Flex direction="column" p={4} border="1px solid" borderColor="gray.300" borderRadius="md" h={{ base: '380px', md: '500px' }}>
       <Flex
         position="sticky"
         top="0"
