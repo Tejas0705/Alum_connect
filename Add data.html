@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload USN and Email Data</title>
+    <link rel="icon" href="./public/alumfavicon.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #1a73e8;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        #excelForm {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: #5f6368;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .file-input-wrapper::after {
+            content: 'Choose file';
+            display: inline-block;
+            background-color: #f1f3f4;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: #5f6368;
+        }
+
+        input[type="file"] {
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+
+        .file-name {
+            background-color: #f1f3f4;
+            padding: 0.5rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1557b0;
+        }
+
+        #status {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #202124;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+    <!-- Add Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <!-- Add SheetJS library for Excel parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload USN and Email Data</h1>
+        <form id="excelForm">
+            <label for="excelFile">Select Excel File</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="excelFile" name="excelFile" accept=".xlsx, .xls" required>
+                <div class="file-name">No file chosen</div>
+            </div>
+            <button type="submit">Upload Data</button>
+        </form>
+        <div id="status"></div>
+    </div>
+    
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-eWRPO-nLM1mvksKl1uFWW09ORFPwYrc",
+            authDomain: "alum-connect07.firebaseapp.com",
+            projectId: "alum-connect07",
+            storageBucket: "alum-connect07.appspot.com",
+            messagingSenderId: "867951212899",
+            appId: "1:867951212899:web:0c2fad0410585efcd7bb56",
+            measurementId:"G-1CM9T86ZKB"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function updateStatus(message) {
+            document.getElementById('status').innerHTML += message + '<br>';
+            console.log(message);
+        }
+
+        async function verifyUpload(usn) {
+            try {
+                const docRef = db.collection('usnEmails').doc(usn);
+                const doc = await docRef.get();
+                if (doc.exists) {
+                    updateStatus(`Verified: Document ${usn} exists in the database.`);
+                } else {
+                    updateStatus(`Error: Document ${usn} does not exist in the database.`);
+                }
+            } catch (error) {
+                updateStatus(`Error verifying document ${usn}: ${error}`);
+            }
+        }
+        const fileInput = document.getElementById('excelFile');
+        const fileName = document.querySelector('.file-name');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+            } else {
+                fileName.textContent = 'No file chosen';
+            }
+        });
+        
+        document.getElementById('excelForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            document.getElementById('status').innerHTML = ''; // Clear previous status messages
+
+            const fileInput = document.getElementById('excelFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                updateStatus('Please select an Excel file');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = async function (e) {
+                updateStatus('File loaded, parsing data...');
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+                updateStatus(`Parsed ${jsonData.length} rows from Excel`);
+
+                // Debug: Log the first row of data
+                if (jsonData.length > 0) {
+                    updateStatus('First row of data:');
+                    updateStatus(JSON.stringify(jsonData[0]));
+                }
+
+                try {
+                    const batch = db.batch();
+                    let count = 0;
+
+                    for (const row of jsonData) {
+                        updateStatus(`Processing row: ${JSON.stringify(row)}`);
+                        if (row.usn && row.email) {
+                            const docRef = db.collection('usnEmails').doc(row.usn);
+                            batch.set(docRef, { usn: row.usn, email: row.email });
+                            count++;
+                            updateStatus(`Added document for USN: ${row.usn}`);
+                        } else {
+                            updateStatus(`Skipped row due to missing usn or email: ${JSON.stringify(row)}`);
+                        }
+                    }
+
+                    updateStatus(`Prepared ${count} documents for upload`);
+                    
+                    if (count > 0) {
+                        await batch.commit();
+                        updateStatus('Batch commit successful');
+
+                        // Verify a few random entries
+                        const sampleSize = Math.min(5, jsonData.length);
+                        for (let i = 0; i < sampleSize; i++) {
+                            const randomIndex = Math.floor(Math.random() * jsonData.length);
+                            await verifyUpload(jsonData[randomIndex].usn);
+                        }
+                    } else {
+                        updateStatus('No documents to upload. Check your Excel file format.');
+                    }
+
+                    updateStatus('Data upload and verification complete');
+                    fileInput.value = ''; // Clear the file input
+                } catch (error) {
+                    updateStatus(`Error uploading data: ${error}`);
+                }
+            };
+
+            reader.onerror = function (ex) {
+                updateStatus(`Error reading file: ${ex}`);
+            };
+
+            updateStatus('Starting file read...');
+            reader.readAsArrayBuffer(file);
+        });
+    </script>
+</body>
+</html>
